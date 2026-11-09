@@ -12,6 +12,8 @@ interface Health {
   indexer: {
     enabled: boolean
     running: boolean
+    snapshot?: boolean
+    snapshotAt?: string | null
     lagBlocks: number | null
     batchesIndexed: number
     batchesPerMinute: number
@@ -49,7 +51,7 @@ export default function Status() {
   const checks = [
     { ok: h.chain.verified, label: 'RPC reports chain ID 5042 (0x13B2)', detail: `eth_chainId returned ${h.chain.reportedHex ?? 'nothing'}.` },
     { ok: h.head !== null && h.head.ageSeconds <= 20, label: 'Latest block is fresh', detail: h.head ? `Block #${fmtInt(h.head.number)} is ${h.head.ageSeconds}s old.` : 'No block could be read.' },
-    { ok: i.enabled && i.running, label: 'Indexer is running', detail: `${i.batchesPerMinute} batches/min · ${fmtInt(i.batchesIndexed)} batches stored · ${fmtInt(i.errorsTotal)} retried errors.` },
+    { ok: i.enabled && i.running, label: 'Indexer is running', detail: i.snapshot ? `Not running on this deployment. Indexed history is a snapshot${i.snapshotAt ? ` taken ${timeAgo(Math.floor(new Date(i.snapshotAt).getTime() / 1000))}` : ''}.` : `${i.batchesPerMinute} batches/min · ${fmtInt(i.batchesIndexed)} batches stored · ${fmtInt(i.errorsTotal)} retried errors.` },
     { ok: i.coverage['24h'] >= 0.97, label: '24H analytics fully indexed', detail: `${Math.round(i.coverage['24h'] * 100)}% covered.` },
     { ok: i.coverage['90d'] >= 0.97, label: '90D analytics fully indexed', detail: `${Math.round(i.coverage['90d'] * 100)}% covered. Historical blocks backfill continuously from newest to oldest.` },
     { ok: primaryOk, label: 'Dedicated primary RPC configured', detail: 'Production needs its own RPC endpoint (ARC_MAINNET_RPC_URL).' },

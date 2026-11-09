@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AddressLink, Badge, Card, CoverageBar, Empty, ErrorState, Segmented, Skeleton, Stat, TxLink, type Nav } from '@/components/ui'
+import { AddressLink, Badge, Card, CoverageBar, Empty, ErrorState, Segmented, SnapshotNote, Skeleton, Stat, TxLink, type Nav } from '@/components/ui'
 import { ApiError, apiGet, useApi } from '@/lib/api'
 import { fmtCompact, fmtDateTime, fmtInt, fmtRaw, timeAgo } from '@/lib/format'
 
@@ -107,6 +107,8 @@ export default function Whales({ nav, search }: { nav: Nav; search: URLSearchPar
           {data && <p className="text-xs text-[var(--subtle)]">The indexer stores transfers of {fmtInt(data.storeFloorUsdc)} USDC or more, so lower thresholds are raised to that floor.</p>}
         </div>
       </Card>
+
+      <SnapshotNote at={meta?.snapshotAt} />
 
       {error ? (
         <ErrorState error={error} onRetry={refetch} />

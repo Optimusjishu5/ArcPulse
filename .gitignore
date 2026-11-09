@@ -5,3 +5,5 @@ dist/
 node_modules/
 .env
 .env.*
+vercel-out/
+server/vercel/snapshot.generated.json

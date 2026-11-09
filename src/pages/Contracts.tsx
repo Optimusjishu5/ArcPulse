@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ExternalLink, Search } from 'lucide-react'
-import { AddressLink, Badge, Card, Empty, ErrorState, Segmented, Skeleton, Stat, TxLink, type Nav } from '@/components/ui'
+import { AddressLink, Badge, Card, Empty, ErrorState, Segmented, SnapshotNote, Skeleton, Stat, TxLink, type Nav } from '@/components/ui'
 import { TokenLogo } from '@/components/TokenLogo'
 import { isLookalike, officialToken } from '@/lib/tokens'
 import { ApiError, useApi } from '@/lib/api'
@@ -43,9 +43,10 @@ function Search_({ nav }: { nav: Nav }) {
 
 function TopList({ nav }: { nav: Nav }) {
   const [range, setRange] = useState<'24h' | '7d' | '30d' | '90d'>('24h')
-  const { data, error, refetch } = useApi<Top>(`/api/contracts/top?range=${range}`, { refetchMs: 60_000 })
+  const { data, error, refetch, meta } = useApi<Top>(`/api/contracts/top?range=${range}`, { refetchMs: 60_000 })
   return (
     <Card title="Most active contracts" subtitle="Transactions received per contract, from the ArcPulse block index (lower bound: top eight contracts per 250-block batch)" action={<Segmented label="Window" value={range} onChange={setRange} options={[{ id: '24h', label: '24H' }, { id: '7d', label: '7D' }, { id: '30d', label: '30D' }, { id: '90d', label: '90D' }]} />}>
+      <SnapshotNote at={meta?.snapshotAt} />
       {error ? <ErrorState error={error} onRetry={refetch} /> : !data ? <Skeleton rows={6} /> : data.contracts.length === 0 ? <Empty>No indexed activity in this window yet.</Empty> : (
         <div className="table-wrap">
           <table className="data">

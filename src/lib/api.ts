@@ -10,6 +10,8 @@ export interface Meta {
   headAgeSeconds: number | null
   fetchedAt: string
   live: boolean
+  /** Set when indexed history comes from a snapshot taken at this time instead of a running indexer. */
+  snapshotAt?: string | null
 }
 
 /** Base URL of the ArcPulse API. Empty means same origin (the bundled server or the Vite proxy). */

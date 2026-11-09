@@ -1,4 +1,4 @@
-import { AlertTriangle, ExternalLink, RefreshCw } from 'lucide-react'
+import { AlertTriangle, ExternalLink, Info, RefreshCw } from 'lucide-react'
 import type { ReactNode } from 'react'
 import type { ApiError } from '@/lib/api'
 import { addressUrl, shortAddr, shortHash, timeAgo, txUrl } from '@/lib/format'
@@ -137,5 +137,19 @@ export function CoverageBar({ coverage, label }: { coverage: number; label: stri
         {complete ? `${label} fully indexed` : `${label} index ${pct}% complete. Charts cover indexed blocks only while history backfills.`}
       </span>
     </div>
+  )
+}
+
+/** Shown wherever indexed history is a bundled snapshot rather than a live index. */
+export function SnapshotNote({ at }: { at: string | null | undefined }) {
+  if (!at) return null
+  const taken = at === 'unavailable' ? null : Math.floor(new Date(at).getTime() / 1000)
+  return (
+    <p role="note" className="flex items-start gap-2 rounded-xl border border-arc-warn/30 bg-arc-warn/10 px-3.5 py-2.5 text-xs text-pretty text-[var(--muted)]">
+      <Info size={14} className="mt-0.5 shrink-0 text-[var(--warn)]" aria-hidden="true" />
+      <span>
+        <b className="text-[var(--ink-2)]">Indexed history is a snapshot{taken ? `, taken ${timeAgo(taken)}` : ' and none is bundled in this deployment'}.</b> Blocks, transactions, balances, transfers and gas below are read from Arc Mainnet in real time. Charts, whale rows and call counts update when the app is redeployed or run with its live indexer.
+      </span>
+    </p>
   )
 }

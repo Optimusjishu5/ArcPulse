@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "server": "bun server/index.ts",
+    "build:vercel": "bun run build && bun server/vercel/build.ts",
     "start": "test -f dist/index.html || bun run build; bun server/index.ts",
     "deploy:self": "bun run ./scripts/self-deploy.ts",
     "compass:deploy": "bun run ./scripts/compass-deploy.ts",

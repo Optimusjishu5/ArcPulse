@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import { ArrowDownToLine, Blocks, Cable, Coins, Gauge as GaugeIcon, Layers, Info, TrendingDown, TrendingUp } from 'lucide-react'
 import { GasEstimator } from '@/components/GasEstimator'
 import { LatestBlocks, LatestTxs, type LiveTx } from '@/components/LatestFeeds'
-import { Card, ErrorState, Segmented, Skeleton, type Nav } from '@/components/ui'
+import { Card, ErrorState, Segmented, SnapshotNote, Skeleton, type Nav } from '@/components/ui'
 import { Donut, GlowChart, RainbowBars, Sparkline, Gauge } from '@/components/viz'
 import { useApi } from '@/lib/api'
 import { fmtCompact, fmtInt, fmtRaw } from '@/lib/format'
@@ -47,7 +47,7 @@ interface Analytics {
 
 interface Health {
   providers: Array<{ name: string; chainVerified: boolean; chainMismatch: boolean; healthy: boolean; lastLatencyMs: number | null }>
-  indexer: { running: boolean; batchesPerMinute: number; lagBlocks: number | null }
+  indexer: { running: boolean; snapshot?: boolean; batchesPerMinute: number; lagBlocks: number | null }
 }
 
 interface TopContracts {
@@ -164,14 +164,14 @@ function Connections({ coverage, range }: { coverage: number | undefined; range:
               ))}
               <tr>
                 <td className="font-semibold">Block indexer</td>
-                <td><Pill ok={data.indexer.running} text={data.indexer.running ? 'Running' : 'Stopped'} /></td>
+                <td><Pill ok={data.indexer.running || data.indexer.snapshot === true} text={data.indexer.snapshot ? 'Snapshot' : data.indexer.running ? 'Running' : 'Stopped'} /></td>
                 <td>
                   <div className="flex items-center gap-3">
                     <div className="h-1.5 w-28 overflow-hidden rounded-full bg-soft"><div className="h-full rounded-full bg-gradient-to-r from-[var(--amber)] to-[var(--pink)]" style={{ width: `${Math.round((coverage ?? 0) * 100)}%` }} /></div>
                     <span className="num text-[var(--subtle)]">{Math.round((coverage ?? 0) * 100)}% of {range.toUpperCase()}</span>
                   </div>
                 </td>
-                <td className="text-right"><Pill ok={(coverage ?? 0) >= 0.97} text={(coverage ?? 0) >= 0.97 ? 'Complete' : 'Backfilling'} /></td>
+                <td className="text-right"><Pill ok={(coverage ?? 0) >= 0.97} text={data.indexer.snapshot ? ((coverage ?? 0) >= 0.97 ? 'Snapshot complete' : 'Snapshot partial') : (coverage ?? 0) >= 0.97 ? 'Complete' : 'Backfilling'} /></td>
               </tr>
             </tbody>
           </table>
@@ -229,6 +229,8 @@ export default function Overview({ nav }: { nav: Nav }) {
           <button className="btn btn-ghost !min-h-10 !rounded-xl" disabled={!a} onClick={() => a && csv(a, range)}><ArrowDownToLine size={15} /> Export CSV</button>
         </div>
       </div>
+
+      <SnapshotNote at={an.meta?.snapshotAt} />
 
       {net.error ? (
         <ErrorState error={net.error} onRetry={net.refetch} />

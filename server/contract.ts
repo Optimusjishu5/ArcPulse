@@ -102,7 +102,7 @@ export async function contractDetail(address: string) {
 export function activeTokens() {
   return memo('active-tokens', 60_000, async () => {
     const head = await headInfo()
-    const from = head.number - 1200
+    const from = head.number - (process.env.VERCEL ? 600 : 1200)
     const logs = await getLogsAdaptive({ topics: [TRANSFER_TOPIC] }, from, head.number)
     const byToken = new Map<string, { transfers: number; senders: Set<string>; receivers: Set<string> }>()
     for (const l of logs) {

@@ -54,7 +54,10 @@ export async function scanTransfers(address: string, opt: ScanOptions): Promise<
   const started = Date.now()
   let hi = opt.beforeBlock !== undefined ? opt.beforeBlock - 1 : head.number
   const top = hi
-  let span = 50_000
+  // Shared public endpoints cap eth_getLogs ranges (10,000 blocks per the Arc docs), so start there on serverless hosts.
+  const maxSpan = process.env.VERCEL ? 10_000 : 400_000
+  const minSpan = process.env.VERCEL ? 10_000 : 25_000
+  let span = process.env.VERCEL ? 10_000 : 50_000
   const seen = new Set<string>()
   const events: DecodedTransfer[] = []
   const tokens = new Set<string>()
@@ -76,14 +79,14 @@ export async function scanTransfers(address: string, opt: ScanOptions): Promise<
       added += 1
     }
     hi = lo - 1
-    span = added < 20 ? Math.min(span * 2, 400_000) : Math.max(25_000, Math.floor(span / 2))
+    span = added < 20 ? Math.min(span * 2, maxSpan) : Math.max(minSpan, Math.floor(span / 2))
   }
   events.sort((a, b) => b.block - a.block || b.logIndex - a.logIndex)
   return { events, scannedFromBlock: Math.max(0, hi + 1), scannedToBlock: top, reachedGenesis: hi < 0, headBlock: head.number }
 }
 
 export async function walletTransfers(address: string, beforeBlock: number | undefined, limit: number) {
-  const scan = await scanTransfers(address, { direction: 'both', beforeBlock, limit, budgetMs: 7000 })
+  const scan = await scanTransfers(address, { direction: 'both', beforeBlock, limit, budgetMs: process.env.VERCEL ? 5000 : 7000 })
   // A scan window can hold far more events than one page. Keep whole blocks only, and resume from the last kept block.
   let cut = Math.min(limit, scan.events.length)
   while (cut < scan.events.length && scan.events[cut]?.block === scan.events[cut - 1]?.block) cut += 1
@@ -119,7 +122,7 @@ export async function walletTransfers(address: string, beforeBlock: number | und
 }
 
 export async function walletHoldings(address: string) {
-  const scan = await scanTransfers(address, { direction: 'in', limit: 5000, budgetMs: 8000, maxTokens: 60 })
+  const scan = await scanTransfers(address, { direction: 'in', limit: 5000, budgetMs: process.env.VERCEL ? 5000 : 8000, maxTokens: 60 })
   const candidates = [...new Set(scan.events.filter((e) => e.kind === 'erc20' && e.token !== ARC.usdc).map((e) => e.token))].slice(0, 60)
   const metas = await tokenMeta(candidates)
   const known = candidates.filter((t) => metas.has(t))

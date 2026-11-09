@@ -20,6 +20,10 @@ No prices, market caps or holder counts are shown because no verified source for
 
 React 18, Vite, TypeScript, Tailwind CSS, wagmi, viem, ConnectKit. Backend: Bun with a SQLite index database.
 
+## Vercel deployment
+
+`bun run build:vercel` (with `bun run server` running) assembles `vercel-out/`: the interface plus one serverless function for the API. Live data (blocks, transactions, balances, transfers, gas) is read from Arc Mainnet on every request. Indexed history (charts, whale rows, call counts) is a labelled snapshot exported from the live indexer at build time, because serverless functions cannot run the indexer. Set `ARC_MAINNET_RPC_URL` in the Vercel project settings to avoid the shared public endpoint's rate limits.
+
 ## Development
 
 Prerequisites: [Bun](https://bun.sh).

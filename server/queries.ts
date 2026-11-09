@@ -194,3 +194,9 @@ export function usdcTopSenders(range: string, limit = 10) {
     )
     .all(since, limit) as Array<{ address: string; transfers: number; volume: number }>
 }
+
+/** Set only by the serverless deployment, where indexed history is a labelled snapshot. */
+export const snapshotInfo = (): { at: string } | null => null
+
+/** Serverless build only: last known active-token scan, labelled as a snapshot. */
+export const tokensSnapshot = (): unknown => null

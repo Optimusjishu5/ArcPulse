@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Search } from 'lucide-react'
-import { AddressLink, Badge, Card, CoverageBar, ErrorState, Segmented, Skeleton, Stat, type Nav } from '@/components/ui'
+import { AddressLink, Badge, Card, CoverageBar, ErrorState, Segmented, SnapshotNote, Skeleton, Stat, type Nav } from '@/components/ui'
 import { TokenLogo } from '@/components/TokenLogo'
 import { useApi } from '@/lib/api'
 import { isLookalike, officialToken } from '@/lib/tokens'
@@ -45,6 +45,7 @@ export default function Tokens({ nav }: { nav: Nav }) {
         <h2 className="display text-xl font-semibold">USDC</h2>
         <Segmented label="USDC window" value={range} onChange={setRange} options={[{ id: '24h', label: '24H' }, { id: '7d', label: '7D' }, { id: '30d', label: '30D' }, { id: '90d', label: '90D' }]} />
       </div>
+      <SnapshotNote at={usdc.meta?.snapshotAt} />
       {usdc.error ? (
         <ErrorState error={usdc.error} onRetry={usdc.refetch} />
       ) : !usdc.data ? (
@@ -79,6 +80,8 @@ export default function Tokens({ nav }: { nav: Nav }) {
           </Card>
         </>
       )}
+
+      <SnapshotNote at={active.meta?.snapshotAt} />
 
       <Card
         title="Most active tokens"
