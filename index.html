@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="Arc Studio by Circle — https://studio.arc.io" />
+    <title>ArcPulse · Arc Mainnet intelligence</title>
+    <meta name="application-name" content="ArcPulse" />
+    <meta name="apple-mobile-web-app-title" content="ArcPulse" />
+    <meta name="description" content="ArcPulse tracks Arc Mainnet in real time: latest blocks, native and ERC-20 USDC transfers, whale movements, wallet intelligence, token and contract analytics." />
+    <meta name="theme-color" content="#090a1c" />
+    <script>
+      (function () {
+        try {
+          var c = localStorage.getItem("arcpulse-theme") || "dark";
+          var light = c === "light" || (c === "system" && window.matchMedia("(prefers-color-scheme: light)").matches);
+          document.documentElement.dataset.theme = light ? "light" : "dark";
+        } catch (e) { document.documentElement.dataset.theme = "dark"; }
+      })();
+    </script>
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ArcPulse" />
+    <meta property="og:title" content="ArcPulse — Arc Mainnet intelligence" />
+    <meta property="og:description" content="Live blocks, USDC flows, whale tracking and wallet intelligence for Arc Mainnet." />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="ArcPulse — Arc Mainnet intelligence" />
+    <meta name="twitter:description" content="Live blocks, USDC flows, whale tracking and wallet intelligence for Arc Mainnet." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230d1b2f'/%3E%3Cpath d='M3 18h6l3-9 5 15 3-9h9' fill='none' stroke='%23acc6e9' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <script type="application/ld+json">
+      {"@context":"https://schema.org","@type":"WebApplication","name":"ArcPulse","applicationCategory":"FinanceApplication","description":"Arc Mainnet blockchain intelligence platform"}
+    </script>
+  </head>
+  <body>
+    <!-- Built with Arc Studio — https://studio.arc.io -->
+    <noscript>ArcPulse needs JavaScript to show live Arc Mainnet data.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

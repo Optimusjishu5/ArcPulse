@@ -1,0 +1,7 @@
+
+# ArcPulse index database
+data/
+dist/
+node_modules/
+.env
+.env.*
